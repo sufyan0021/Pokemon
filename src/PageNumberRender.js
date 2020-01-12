@@ -2,39 +2,27 @@ import React, { useContext } from 'react';
 import './App.css';
 import PokemonContextProvider from './contexts/PokemonContext';
 import { PokemonContext } from './contexts/PokemonContext';
+import ReactPaginate from 'react-paginate';
 
 const PageNumberRender = (props) => {
-    const { total, per_page, current_page, handleCurrentPage } = useContext(PokemonContext);
-    const pageNumbers = [];
-    for (let i = 1; i <= Math.ceil(total / per_page); i++) {
-        pageNumbers.push(i);
-    }
-    const renderPageNumbers = pageNumbers.map(number => {
-        if (current_page === number) {
-            return (
-                <span key={number} className='active'>{number}</span>
-            );
-        }
-        else {
-            return <span key={number} onClick={(e) => { handleCurrentPage(e.target.innerText); }}>{number}</span>
-        }
-    });
+    const { total, per_page, handleCurrentPage } = useContext(PokemonContext);
+
+    const numberOfPages = total / per_page;
+
     return (
-        <div className='pagination'>
-            <span>&laquo;</span>
-            {renderPageNumbers}
-        </div>
+        <ReactPaginate
+            onPageChange={({ selected }) => {
+                handleCurrentPage(selected * per_page)
+            }}
+            pageCount={numberOfPages}
+            pageRangeDisplayed={10}
+            marginPagesDisplayed={2}
+            containerClassName={'pagination'}
+            subContainerClassName={'pages pagination'}
+            activeClassName={'active'}
+        />
     );
 
-    /*if (total == undefined && per_page == undefined) {
-        return (<h1>loading pagenum</h1>);
-    }
-    else {
-        return (
-            //console.log(total + " is " + per_page)
-            console.log('pagenums arre', pageNumbers)
-        );
-    }*/
 }
 
 export default PageNumberRender
